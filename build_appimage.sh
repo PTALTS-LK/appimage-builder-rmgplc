@@ -224,6 +224,7 @@ install_component mcpelauncher
 reset_cmake_options
 add_cmake_options "${DEFAULT_CMAKE_OPTIONS[@]}" -DCMAKE_ASM_FLAGS="$MCPELAUNCHERUI_CFLAGS $CFLAGS" -DCMAKE_C_FLAGS="$MCPELAUNCHERUI_CFLAGS $CFLAGS" -DCMAKE_CXX_FLAGS="$MCPELAUNCHERUI_CXXFLAGS $MCPELAUNCHERUI_CFLAGS $CXXFLAGS $CFLAGS"
 add_cmake_options -DCMAKE_INSTALL_PREFIX=/usr -DGAME_LAUNCHER_PATH=. -DLAUNCHER_VERSION_NAME="$(cat version.txt).${BUILD_NUM}-AppImage-$TARGETARCH" -DLAUNCHER_VERSION_CODE="${BUILD_NUM}" -DLAUNCHER_CHANGE_LOG="Launcher $(cat version.txt)<br/>$(cat changelog.txt)" -DQt5QuickCompiler_FOUND:BOOL=OFF -DLAUNCHER_ENABLE_GOOGLE_PLAY_LICENCE_CHECK=ON -DLAUNCHER_DISABLE_DEV_MODE=ON -DLAUNCHER_VERSIONDB_URL=https://raw.githubusercontent.com/minecraft-linux/mcpelauncher-versiondb/$(cat versionsdbremote.txt) -DLAUNCHER_VERSIONDB_PATH="$SOURCE_DIR/versionsdb" $UPDATE_CMAKE_OPTIONS
+add_cmake_options -DLAUNCHER_ENABLE_GOOGLE_PLAY_LICENCE_CHECK=OFF
 call_quirk build_mcpelauncher_ui
 
 build_component64 mcpelauncher-ui

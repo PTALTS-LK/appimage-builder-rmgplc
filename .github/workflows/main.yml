@@ -423,65 +423,65 @@ jobs:
       with:
         name: appimage-bookworm-${{ matrix.arch }}
         path: output/
-  publish:
-    permissions: write-all
-    runs-on: ubuntu-latest
-    needs: [ build, build32, buildbusterappimage, buildarmappimage64, appimage-bookworm ]
-    if: ${{ !cancelled() && github.event_name == 'push' && github.server_url == 'https://github.com' && github.repository == 'minecraft-linux/appimage-builder' }}
-    steps:
-    - uses: actions/checkout@v3
-    - run: echo "APPIMAGE_VERSION=$(cat version.txt)" >> $GITHUB_ENV
-    - name: Setup Vars
-      id: setup-vars
-      uses: actions/github-script@v6
-      with:
-        script: |
-          core.setOutput("owner", context.repo.owner)
-          core.setOutput("repo", context.repo.repo)
-    - name: Download everything
-      uses: actions/download-artifact@v4
-      with:
-        path: output
-        pattern: appimage-*
-        merge-multiple: true
-    - name: Download ghr
-      run: |
-        curl -L https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz --output ghr.tar.gz
-        tar -xf ghr.tar.gz
-    - name: Upload ${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[DRAFT]') && 'Latest' || 'Draft' }}
-      if: github.ref == 'refs/heads/main'
-      run: |
-        ./ghr*/ghr -t ${{ secrets.GITHUB_TOKEN }} -u ${{ steps.setup-vars.outputs.owner }} -r ${{ steps.setup-vars.outputs.repo }} ${{ !(github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[DRAFT]')) && '-draft ' || '' }}-b "$LAUNCHER_RELEASE_DESCRIPTION$(cat changelog.txt)" "$(cat version.txt)-${GITHUB_RUN_NUMBER}" output/
-      env:
-        LAUNCHER_RELEASE_DESCRIPTION: |
-          **You need to own Minecraft on the google play store and login with your google account to use this launcher**
-          Links for linux flatpak or macOS can be found on our wiki https://mcpelauncher.readthedocs.io.
+  # publish:
+  #   permissions: write-all
+  #   runs-on: ubuntu-latest
+  #   needs: [ build, build32, buildbusterappimage, buildarmappimage64, appimage-bookworm ]
+  #   if: ${{ !cancelled() && github.event_name == 'push' && github.server_url == 'https://github.com' && github.repository == 'minecraft-linux/appimage-builder' }}
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - run: echo "APPIMAGE_VERSION=$(cat version.txt)" >> $GITHUB_ENV
+  #   - name: Setup Vars
+  #     id: setup-vars
+  #     uses: actions/github-script@v6
+  #     with:
+  #       script: |
+  #         core.setOutput("owner", context.repo.owner)
+  #         core.setOutput("repo", context.repo.repo)
+  #   - name: Download everything
+  #     uses: actions/download-artifact@v4
+  #     with:
+  #       path: output
+  #       pattern: appimage-*
+  #       merge-multiple: true
+  #   - name: Download ghr
+  #     run: |
+  #       curl -L https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz --output ghr.tar.gz
+  #       tar -xf ghr.tar.gz
+  #   - name: Upload ${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[DRAFT]') && 'Latest' || 'Draft' }}
+  #     if: github.ref == 'refs/heads/main'
+  #     run: |
+  #       ./ghr*/ghr -t ${{ secrets.GITHUB_TOKEN }} -u ${{ steps.setup-vars.outputs.owner }} -r ${{ steps.setup-vars.outputs.repo }} ${{ !(github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[DRAFT]')) && '-draft ' || '' }}-b "$LAUNCHER_RELEASE_DESCRIPTION$(cat changelog.txt)" "$(cat version.txt)-${GITHUB_RUN_NUMBER}" output/
+  #     env:
+  #       LAUNCHER_RELEASE_DESCRIPTION: |
+  #         **You need to own Minecraft on the google play store and login with your google account to use this launcher**
+  #         Links for linux flatpak or macOS can be found on our wiki https://mcpelauncher.readthedocs.io.
 
-          [Download link for intel or amd based 64bit systems ( known as amd64, intel64 and x86_64 e.g. most PC's or Laptops )](https://github.com/minecraft-linux/appimage-builder/releases/download/${{env.APPIMAGE_VERSION}}-${{github.run_number}}/Minecraft_Bedrock_Launcher-x86_64-${{env.APPIMAGE_VERSION}}.${{github.run_number}}.AppImage)
+  #         [Download link for intel or amd based 64bit systems ( known as amd64, intel64 and x86_64 e.g. most PC's or Laptops )](https://github.com/minecraft-linux/appimage-builder/releases/download/${{env.APPIMAGE_VERSION}}-${{github.run_number}}/Minecraft_Bedrock_Launcher-x86_64-${{env.APPIMAGE_VERSION}}.${{github.run_number}}.AppImage)
 
-          [Download link for arm based 64bit systems ( known as arm64 and aarch64 e.g. raspberry Pi3 or later, pinephone or pinebook )](https://github.com/minecraft-linux/appimage-builder/releases/download/${{env.APPIMAGE_VERSION}}-${{github.run_number}}/Minecraft_Bedrock_Launcher-arm64-${{env.APPIMAGE_VERSION}}.${{github.run_number}}.AppImage)
+  #         [Download link for arm based 64bit systems ( known as arm64 and aarch64 e.g. raspberry Pi3 or later, pinephone or pinebook )](https://github.com/minecraft-linux/appimage-builder/releases/download/${{env.APPIMAGE_VERSION}}-${{github.run_number}}/Minecraft_Bedrock_Launcher-arm64-${{env.APPIMAGE_VERSION}}.${{github.run_number}}.AppImage)
 
-          - run `uname -a` to know which system you are using
-          - once downloaded the launcher shows you banner if an update is available
-            - no need to download the whole file again
-            - usually small updates with less than 5MB
-            - you can update it externally with appimageupdate or appimagelauncher
-            - the check for updates can be disabled in settings
+  #         - run `uname -a` to know which system you are using
+  #         - once downloaded the launcher shows you banner if an update is available
+  #           - no need to download the whole file again
+  #           - usually small updates with less than 5MB
+  #           - you can update it externally with appimageupdate or appimagelauncher
+  #           - the check for updates can be disabled in settings
 
-          # Not available Features you may miss
-          - Xbox live friend joining
-            - usually times out or crashs the game in both directions
-            - consider using the offical server software <https://www.minecraft.net/en-us/download/server/bedrock>
-              - connect all by ip as external server
-          - Xbox live login
-            - a lot of devices seem to get error code "drowned" without beeing asked for login
-              - error code "drowned" has more meanings like you closed the webview window without sign in or you pressed signin too early
-            - sometimes it helps to select a timezone used by developers of this launcher like Europe/Berlin or using a fixed UTC timezone without any Region/City
-          ### Changelog
-    - name: Publish release
-      if: github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[DRAFT]')
-      run: |
-        mkdir -p output3
-        cp output/*.zsync output3/
-        ./ghr*/ghr -t ${{ secrets.GITHUB_TOKEN }} -u ${{ steps.setup-vars.outputs.owner }} -r ${{ steps.setup-vars.outputs.repo }} -replace ng.appimage output3/
-        ./ghr*/ghr -t ${{ secrets.GITHUB_TOKEN }} -u ${{ steps.setup-vars.outputs.owner }} -r ${{ steps.setup-vars.outputs.repo }} -replace appimage output3/
+  #         # Not available Features you may miss
+  #         - Xbox live friend joining
+  #           - usually times out or crashs the game in both directions
+  #           - consider using the offical server software <https://www.minecraft.net/en-us/download/server/bedrock>
+  #             - connect all by ip as external server
+  #         - Xbox live login
+  #           - a lot of devices seem to get error code "drowned" without beeing asked for login
+  #             - error code "drowned" has more meanings like you closed the webview window without sign in or you pressed signin too early
+  #           - sometimes it helps to select a timezone used by developers of this launcher like Europe/Berlin or using a fixed UTC timezone without any Region/City
+  #         ### Changelog
+  #   - name: Publish release
+  #     if: github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[DRAFT]')
+  #     run: |
+  #       mkdir -p output3
+  #       cp output/*.zsync output3/
+  #       ./ghr*/ghr -t ${{ secrets.GITHUB_TOKEN }} -u ${{ steps.setup-vars.outputs.owner }} -r ${{ steps.setup-vars.outputs.repo }} -replace ng.appimage output3/
+  #       ./ghr*/ghr -t ${{ secrets.GITHUB_TOKEN }} -u ${{ steps.setup-vars.outputs.owner }} -r ${{ steps.setup-vars.outputs.repo }} -replace appimage output3/

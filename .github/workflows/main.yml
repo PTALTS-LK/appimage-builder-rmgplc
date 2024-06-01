@@ -1,12 +1,12 @@
 name: Containers
 
 on:
+  workflow_dispatch:
   push:
     branches:
       main
   pull_request:
   workflow_call:
-  workflow_dispatch:
     inputs:
       submodule-refs:
         type: string
